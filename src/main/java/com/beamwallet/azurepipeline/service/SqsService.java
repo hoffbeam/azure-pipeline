@@ -6,10 +6,14 @@ import com.amazonaws.services.sqs.model.SendMessageRequest;
 import com.amazonaws.services.sqs.model.SendMessageResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class SqsService {
+
+    @Value("${sqs.url}")
+    private String queueUrl;
 
     Logger logger = LoggerFactory.getLogger(SqsService.class);
 
@@ -17,7 +21,7 @@ public class SqsService {
 
     public void sendMessage(String body) {
         SendMessageRequest send_msg_request = new SendMessageRequest()
-                .withQueueUrl("https://sqs.eu-central-1.amazonaws.com/148323770033/hoff-test")
+                .withQueueUrl(queueUrl)
                 .withMessageBody(body);
         logger.info("Before sending message to sqs");
         SendMessageResult response = sqs.sendMessage(send_msg_request);

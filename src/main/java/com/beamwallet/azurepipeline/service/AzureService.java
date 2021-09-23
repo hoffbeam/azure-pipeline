@@ -4,8 +4,10 @@ import com.azure.messaging.servicebus.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -15,25 +17,31 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class AzureService {
 
-    static Logger logger = LoggerFactory.getLogger(AzureService.class);
-
     @Autowired
     private SqsService sqsService;
 
-    private String connectionString = "Endpoint=sb://beam-eastus-dev.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=TyeZeXYFiPIOTgd6uwa5Tt+1WIkyIlrKmmDojpWUVwE=";
-    private String queueName = "proofofconcept-transactions";
+    static Logger logger = LoggerFactory.getLogger(AzureService.class);
+
+    @Value("${azure.url}")
+    private String connectionString;
+    @Value("${azure.topic}")
+    private String queueName;
 
     private CountDownLatch countdownLatch = new CountDownLatch(1);
 
-    // Create an instance of the processor through the ServiceBusClientBuilder
-    ServiceBusProcessorClient processorClient = new ServiceBusClientBuilder()
-            .connectionString(connectionString)
-            .processor()
-            .queueName(queueName)
-            .processMessage(this::processMessage)
-            .processError(context -> processError(context, countdownLatch))
-            .buildProcessorClient();
+    private ServiceBusProcessorClient processorClient = null;
 
+    @PostConstruct
+    public void init() {
+        // Create an instance of the processor through the ServiceBusClientBuilder
+        processorClient = null;new ServiceBusClientBuilder()
+                .connectionString(connectionString)
+                .processor()
+                .queueName(queueName)
+                .processMessage(this::processMessage)
+                .processError(context -> processError(context, countdownLatch))
+                .buildProcessorClient();
+    }
 
     public void runListener() throws InterruptedException {
         logger.info("Starting the processor");
