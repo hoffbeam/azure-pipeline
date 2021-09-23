@@ -84,11 +84,10 @@
                             <executable>docker</executable>
                             <workingDirectory>${project.basedir}</workingDirectory>
                             <arguments>
-                                <argument>rmi</argument>
+                                <argument>image</argument>
+                                <argument>prune</argument>
                                 <argument>-f</argument>
-                                <argument>${project.groupId}/${project.artifactId}:${project.version}</argument>
-                                <argument>-f</argument>
-                                <argument>${project.groupId}/${project.artifactId}:latest</argument>
+                                <argument>-a</argument>
                             </arguments>
                         </configuration>
                     </execution>
