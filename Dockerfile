@@ -1,7 +1,9 @@
 FROM adoptopenjdk/openjdk11:alpine-jre
 
+ARG VERSION
+
 # Refer to Maven build -> finalName
-ARG JAR_FILE=target/azure-pipeline-0.0.1-SNAPSHOT.jar
+ARG JAR_FILE=target/azure-pipeline-${VERSION}.jar
 
 # cd /opt/app
 WORKDIR /opt/app

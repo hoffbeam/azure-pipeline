@@ -1,0 +1,9 @@
+version: '3'
+services:
+  app:
+    image: com.beamwallet/azure-pipeline:latest
+    volumes:
+      - $HOME/.aws/credentials
+    environment:
+      AWS_DEFAULT_REGION: "eu-central-1"
+      AWS_REGION: "eu-central-1"
